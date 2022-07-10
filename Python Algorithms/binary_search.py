@@ -1,6 +1,5 @@
 # Binary Search - time complexity: O(log(n))
-# NOTE: This works only for sorted arrays
-# Iterative method
+
 def binary_search(l, value):
     LOW = 0
     TOP = len(l)-1
