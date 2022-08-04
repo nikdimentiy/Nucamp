@@ -1,4 +1,4 @@
-import regex as re
+import re
 
 # regex for credit card validation - American Express
 
