@@ -40,3 +40,15 @@ def jump_search(arr, element):
     # If the element is not found, return -1.
     return -1
 
+# Driver code to test jump_search
+if __name__ == "__main__":
+    arr = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19]
+    element_to_find = 11
+
+    index = jump_search(arr, element_to_find)
+
+    if index != -1:
+        print(f"Element {element_to_find} found at index {index}.")
+    else:
+        print(f"Element {element_to_find} not found in the array.")
+
