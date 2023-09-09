@@ -1,22 +1,25 @@
+/* This CSS code styles the HTML document. */
+
 body {
+  /* Sets the font family to Arial, sans-serif. */
+  font-family: Arial, sans-serif;
+
+  /* Sets the margins to 0. */
   margin: 0;
-  text-align: center;
-  font-family: "Merriweather", serif;
+
+  /* Sets the padding to 0. */
+  padding: 0;
 }
 
 h1 {
-  color: #66bfbf;
-  font-size: 3.3rem;
-  margin: 50px auto 0 auto;
-  font-family: "Sacramento", cursive;
-}
+  /* Sets the color to rgb(216, 65, 203). */
+  color: rgb(216, 65, 203);
 
-h2 {
-  color: #66bfbf;
-  font-family: "Montserrat", sans-serif;
-  font-size: 3.15rem;
-  font-weight: normal;
-  padding-bottom: 10px;
+  /* Centers the text. */
+  text-align: center;
+
+  /* Sets the top margin to 50px. */
+  margin-top: 50px;
 }
 
 .form {
@@ -40,8 +43,6 @@ input {
 
   /* Sets the bottom margin to 10px. */
   margin-bottom: 10px;
-  color: #1d3557;
-  font-size: 1.1rem;
 }
 
 button {
@@ -52,13 +53,13 @@ button {
   padding: 10px 20px;
 
   /* Sets the font size to 16px. */
-  font-size: 20px;
+  font-size: 16px;
 
   /* Sets the background color to #4CAF50. */
-  background-color: #00ff00;
+  background-color: #4CAF50;
 
   /* Sets the color to white. */
-  color: #264653;
+  color: white;
 
   /* Removes the border. */
   border: none;
@@ -72,7 +73,7 @@ button {
 
 button:hover {
   /* Sets the background color to #3E8E41 when the button is hovered over. */
-  background-color: #3e8e41;
+  background-color: #3E8E41;
 }
 
 #result {
@@ -87,11 +88,11 @@ button:hover {
   /* Centers the text. */
   text-align: center;
 
-  /* Sets the font size to 21px. */
-  font-size: 21px;
+  /* Sets the font size to 18px. */
+  font-size: 18px;
 
   /* Sets the bottom margin to 10px. */
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 #result ul {
@@ -110,13 +111,13 @@ button:hover {
 
 #result li {
   /* Sets the font size to 16px. */
-  font-size: 17px;
+  font-size: 16px;
 
   /* Sets the padding to 10px. */
   padding: 10px;
 
   /* Sets the background color to #f2f2f2. */
-  background-color: #80ffff;
+  background-color: #f2f2f2;
 
   /* Rounds the corners of the list item. */
   border-radius: 4px;
