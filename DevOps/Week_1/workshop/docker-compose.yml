@@ -1,6 +1,17 @@
+# Docker Compose Version
 version: "3.8"
+
+# Define services for your application
 services:
+  # Web service for your Django application
   web:
+    container_name: web_container
+    build: ./app
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - 8000:8000
+    volumes:
+      - ./app/:/usr/src/app/
     environment:
       - DB_NAME=nc_tutorials_db
       - DB_USER=postgres
@@ -10,37 +21,228 @@ services:
       - DATABASE=postgres
     depends_on:
       - pg
+    # This service runs your Django application using the specified settings.
+
+  # PostgreSQL database service
+  pg:
+    container_name: pg_container
+    image: postgres:13.2-alpine
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/data
+      - ./data/misc/django_init.sql:/docker-entrypoint-initdb.d/1-django-init.sql
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: nc_tutorials_db
+      POSTGRES_HOST_AUTH_METHOD: trust
+    # This service sets up a PostgreSQL database for your Django application.
+    # It also uses a custom SQL script for initialization.
+
+  # pgAdmin service for managing PostgreSQL
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4:5.2
+    restart: always
+    ports:
+      - "5433:5433"
+    depends_on:
+      - pg
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_LISTEN_PORT: 5433
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    # This service runs pgAdmin, a web-based management tool for PostgreSQL.
+    # It allows you to manage your PostgreSQL database easily.
+
+# End of Docker Compose file
+# Docker Compose Version
+version: "3.8"
+
+# Define services for your application
+services:
+  # Web service for your Django application
+  web:
+    container_name: web_container
     build: ./app
     command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      - ./app/:/usr/src/app/
     ports:
       - 8000:8000
+    volumes:
+      - ./app/:/usr/src/app/
+    environment:
+      - DB_NAME=nc_tutorials_db
+      - DB_USER=postgres
+      - DB_PASSWORD=admin123
+      - DB_HOST=pg
+      - DB_PORT=5432
+      - DATABASE=postgres
+    depends_on:
+      - pg
+    # This service runs your Django application using the specified settings.
+
+  # PostgreSQL database service
   pg:
-      container_name: pg_container
-      image: postgres:13.2-alpine
-      restart: always
-      environment:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: admin123
-          POSTGRES_DB: nc_tutorials_db
-          POSTGRES_HOST_AUTH_METHOD: trust
-      ports:
-          - "5432:5432"
-      volumes:
-          - ./data:/data
-          - ./data/misc/django_init.sql:/docker-entrypoint-initdb.d/1-django-init.sql
+    container_name: pg_container
+    image: postgres:13.2-alpine
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/data
+      - ./data/misc/django_init.sql:/docker-entrypoint-initdb.d/1-django-init.sql
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: nc_tutorials_db
+      POSTGRES_HOST_AUTH_METHOD: trust
+    # This service sets up a PostgreSQL database for your Django application.
+    # It also uses a custom SQL script for initialization.
+
+  # pgAdmin service for managing PostgreSQL
   pgadmin:
-      container_name: pgadmin_container
-      image: dpage/pgadmin4:5.2
-      restart: always
-      environment:
-          PGADMIN_DEFAULT_EMAIL: admin@example.com
-          PGADMIN_DEFAULT_PASSWORD: admin123
-          PGADMIN_LISTEN_PORT: 5433
-          PGADMIN_CONFIG_SERVER_MODE: "False"
-          PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
-      ports:
-          - "5433:5433"
-      depends_on:
-          - pg
+    container_name: pgadmin_container
+    image: dpage/pgadmin4:5.2
+    restart: always
+    ports:
+      - "5433:5433"
+    depends_on:
+      - pg
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_LISTEN_PORT: 5433
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    # This service runs pgAdmin, a web-based management tool for PostgreSQL.
+    # It allows you to manage your PostgreSQL database easily.
+
+# End of Docker Compose file
+# Docker Compose Version
+version: "3.8"
+
+# Define services for your application
+services:
+  # Web service for your Django application
+  web:
+    container_name: web_container
+    build: ./app
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - 8000:8000
+    volumes:
+      - ./app/:/usr/src/app/
+    environment:
+      - DB_NAME=nc_tutorials_db
+      - DB_USER=postgres
+      - DB_PASSWORD=admin123
+      - DB_HOST=pg
+      - DB_PORT=5432
+      - DATABASE=postgres
+    depends_on:
+      - pg
+    # This service runs your Django application using the specified settings.
+
+  # PostgreSQL database service
+  pg:
+    container_name: pg_container
+    image: postgres:13.2-alpine
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/data
+      - ./data/misc/django_init.sql:/docker-entrypoint-initdb.d/1-django-init.sql
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: nc_tutorials_db
+      POSTGRES_HOST_AUTH_METHOD: trust
+    # This service sets up a PostgreSQL database for your Django application.
+    # It also uses a custom SQL script for initialization.
+
+  # pgAdmin service for managing PostgreSQL
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4:5.2
+    restart: always
+    ports:
+      - "5433:5433"
+    depends_on:
+      - pg
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_LISTEN_PORT: 5433
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    # This service runs pgAdmin, a web-based management tool for PostgreSQL.
+    # It allows you to manage your PostgreSQL database easily.
+
+# End of Docker Compose file
+# Docker Compose Version
+version: "3.8"
+
+# Define services for your application
+services:
+  # Web service for your Django application
+  web:
+    container_name: web_container
+    build: ./app
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - 8000:8000
+    volumes:
+      - ./app/:/usr/src/app/
+    environment:
+      - DB_NAME=nc_tutorials_db
+      - DB_USER=postgres
+      - DB_PASSWORD=admin123
+      - DB_HOST=pg
+      - DB_PORT=5432
+      - DATABASE=postgres
+    depends_on:
+      - pg
+    # This service runs your Django application using the specified settings.
+
+  # PostgreSQL database service
+  pg:
+    container_name: pg_container
+    image: postgres:13.2-alpine
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/data
+      - ./data/misc/django_init.sql:/docker-entrypoint-initdb.d/1-django-init.sql
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: nc_tutorials_db
+      POSTGRES_HOST_AUTH_METHOD: trust
+    # This service sets up a PostgreSQL database for your Django application.
+    # It also uses a custom SQL script for initialization.
+
+  # pgAdmin service for managing PostgreSQL
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4:5.2
+    restart: always
+    ports:
+      - "5433:5433"
+    depends_on:
+      - pg
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_LISTEN_PORT: 5433
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    # This service runs pgAdmin, a web-based management tool for PostgreSQL.
+    # It allows you to manage your PostgreSQL database easily.
+
+# End of Docker Compose file
