@@ -1,7 +1,7 @@
 # Nucamp Coding Bootcamp and Coding Interview Preparation 🚀
 
 ## Overview
-Welcome to the repository for Nucamp Coding Bootcamp! 🎓 Here, you'll find a treasure trove of resources, including workshops, code samples, and application settings. Dive into our comprehensive collection covering web development, software engineering, and programming fundamentals.
+Welcome to the repository for Nucamp Coding Bootcamp! 🎓 Here, you'll find a treasure trove of resources, including workshops, code samples, and application settings.
 
 ## Contents
 ### Workshops 🛠️
