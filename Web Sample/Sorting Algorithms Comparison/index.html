@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorting Algorithms Comparison</title>
+
+    <style>
+        body {
+            margin: 0;
+            text-align: center;
+            font-family: "Merriweather", serif;
+        }
+
+        h1 {
+            color: #66bfbf;
+            font-size: 3.3rem;
+            margin: 50px auto 0 auto;
+            font-family: "Sacramento", cursive;
+        }
+
+        h2 {
+            color: #66bfbf;
+            font-family: "Montserrat", sans-serif;
+            font-size: 3.15rem;
+            font-weight: normal;
+            padding-bottom: 10px;
+        }
+
+        .form {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        label,
+        input {
+            display: block;
+            margin-bottom: 10px;
+            color: #1d3557;
+            font-size: 1.1rem;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 20px;
+            background-color: #00ff00;
+            color: #1f23dd;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #3e8e41;
+        }
+
+        #result {
+            margin-top: 30px;
+            display: none;
+        }
+
+        #result p {
+            text-align: center;
+            font-size: 21px;
+            margin-bottom: 12px;
+        }
+
+        #result ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        #result li {
+            font-size: 17px;
+            padding: 10px;
+            background-color: #8fee23;
+            border-radius: 4px;
+            box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #25c0e7;
+        }
+    </style>
+</head>
+
+<body class="body">
+    <h1>Sorting Algorithms Comparison</h1>
+
+    <div class="form">
+        <label for="inputArray">Enter an array of numbers (comma-separated):</label>
+        <input type="text" id="inputArray" placeholder="e.g., 5, 3, 8, 2, 1">
+
+        <button onclick="sortArray('selectionSort')">Selection Sort</button>
+        <button onclick="sortArray('bubbleSort')">Bubble Sort</button>
+        <button onclick="sortArray('insertionSort')">Insertion Sort</button>
+        <!-- Add more buttons for other sorting algorithms -->
+
+        <button onclick="clearInput()">Clear</button>
+    </div>
+
+    <div id="result" class="result">
+        <p>Sorted Array:</p>
+        <ul></ul>
+        <p id="permutations"></p>
+    </div>
+
+    <script>
+        function selectionSort(array) {
+            let n = array.length;
+            let permutations = 0;
+
+            for (let i = 0; i < n - 1; i++) {
+                let minIndex = i;
+
+                for (let j = i + 1; j < n; j++) {
+                    if (array[j] < array[minIndex]) {
+                        minIndex = j;
+                    }
+                    permutations++;
+                }
+
+                let temp = array[minIndex];
+                array[minIndex] = array[i];
+                array[i] = temp;
+            }
+
+            return { sortedArray: array, permutations };
+        }
+
+        function bubbleSort(array) {
+            let n = array.length;
+            let permutations = 0;
+            let swapped;
+
+            do {
+                swapped = false;
+
+                for (let i = 0; i < n - 1; i++) {
+                    if (array[i] > array[i + 1]) {
+                        let temp = array[i];
+                        array[i] = array[i + 1];
+                        array[i + 1] = temp;
+                        swapped = true;
+                    }
+                    permutations++;
+                }
+            } while (swapped);
+
+            return { sortedArray: array, permutations };
+        }
+
+        function insertionSort(array) {
+            let n = array.length;
+            let permutations = 0;
+
+            for (let i = 1; i < n; i++) {
+                let key = array[i];
+                let j = i - 1;
+
+                while (j >= 0 && array[j] > key) {
+                    array[j + 1] = array[j];
+                    j = j - 1;
+                    permutations++;
+                }
+
+                array[j + 1] = key;
+            }
+
+            return { sortedArray: array, permutations };
+        }
+
+        // Add more sorting algorithms here
+
+        function displayResult(sortedArray, permutations) {
+            let resultContainer = document.getElementById('result');
+            resultContainer.style.display = 'block';
+
+            let resultUl = document.querySelector('#result ul');
+            resultUl.innerHTML = '';
+
+            sortedArray.forEach(item => {
+                let li = document.createElement('li');
+                li.textContent = item;
+                resultUl.appendChild(li);
+            });
+
+            let permutationsText = document.getElementById('permutations');
+            permutationsText.textContent = `Permutations: ${permutations}`;
+        }
+
+        function sortArray(algorithm) {
+            let inputArray = document.getElementById('inputArray').value;
+            let parsedArray = inputArray.split(',').map(Number);
+
+            let { sortedArray, permutations } = { sortedArray: [], permutations: 0 };
+
+            switch (algorithm) {
+                case 'selectionSort':
+                    ({ sortedArray, permutations } = selectionSort([...parsedArray]));
+                    break;
+                case 'bubbleSort':
+                    ({ sortedArray, permutations } = bubbleSort([...parsedArray]));
+                    break;
+                case 'insertionSort':
+                    ({ sortedArray, permutations } = insertionSort([...parsedArray]));
+                    break;
+                // Add cases for other sorting algorithms
+
+                default:
+                    break;
+            }
+
+            displayResult(sortedArray, permutations);
+        }
+
+        function clearInput() {
+            document.getElementById('inputArray').value = '';
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('permutations').textContent = '';
+        }
+    </script>
+
+</body>
+
+</html>
