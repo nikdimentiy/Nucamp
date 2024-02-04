@@ -1,4 +1,4 @@
-ldef second_largest(numbers):
+def second_largest(numbers):
     """
     Find the second largest number in a list of numbers.
 
@@ -40,13 +40,3 @@ if __name__ == "__main__":
     numbers_list = [1, 5, 3, 7, 2]
     result = second_largest(numbers_list)
     print(f"The second largest number in {numbers_list} is: {result}")
-def second_largest(numbers):
-    """Find the second largest number in a list of numbers."""
-    largest = None
-    second_largest = None
-    for number in numbers:
-        if largest is None or number > largest:
-            second_largest, largest = largest, number
-        elif second_largest is None or number > second_largest:
-            second_largest = number
-    return second_largest
