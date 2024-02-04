@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selection Sort Result</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Assuming your CSS is saved in a file named styles.css -->
+
+    <style>
+        body {
+            font-family: 'Verdana', sans-serif;
+            margin: 20px;
+        }
+
+        .info {
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .info h2 {
+            margin-bottom: 15px;
+            color: #4CAF50; /* Green color for the header */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .form button {
+            background-color: #c342e4; /* Magenta color for the "Clear" button */
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .form button:hover {
+            background-color: #00d71d; /* Darker magenta on hover */
+        }
+    </style>
+</head>
+
+<body class="body">
+    <div class="info">
+        <h2>Selection Sort</h2>
+        <p>Selection sort is a simple comparison-based sorting algorithm. It repeatedly selects the smallest element from the unsorted region and swaps it with the first element of the unsorted region.</p>
+        <p>Time Complexity (Big O): O(n^2) - Quadratic time complexity. Space Complexity: O(1) - Constant space complexity.</p>
+    </div>
+
+    <h1>Selection Sort Result</h1>
+
+    <div class="form">
+        <label for="inputArray">Enter an array of numbers (comma-separated):</label>
+        <input type="text" id="inputArray" placeholder="e.g., 5, 3, 8, 2, 1">
+
+        <button onclick="sortArray()">Sort</button>
+        <button onclick="clearInput()">Clear</button>
+    </div>
+
+    <div id="result" class="result">
+        <p>Sorted Array:</p>
+        <ul></ul>
+        <p id="permutations"></p>
+    </div>
+
+    <h2>Comparison with Other Sorting Algorithms</h2>
+
+    <table>
+        <tr>
+            <th>Algorithm</th>
+            <th>Time Complexity (Average)</th>
+            <th>Space Complexity</th>
+            <th>Notes</th>
+        </tr>
+        <tr>
+            <td>Selection Sort</td>
+            <td>O(n^2)</td>
+            <td>O(1)</td>
+            <td>Simple but inefficient on large datasets.</td>
+        </tr>
+        <tr>
+            <td>Bubble Sort</td>
+            <td>O(n^2)</td>
+            <td>O(1)</td>
+            <td>Similar to selection sort but performs more swaps.</td>
+        </tr>
+        <tr>
+            <td>Insertion Sort</td>
+            <td>O(n^2)</td>
+            <td>O(1)</td>
+            <td>Performs well on small datasets and partially sorted arrays.</td>
+        </tr>
+        <tr>
+            <td>Merge Sort</td>
+            <td>O(n log n)</td>
+            <td>O(n)</td>
+            <td>Efficient, but requires additional space.</td>
+        </tr>
+        <tr>
+            <td>Quick Sort</td>
+            <td>O(n log n)</td>
+            <td>O(log n)</td>
+            <td>Efficient in most cases but may degrade to O(n^2) in worst-case scenarios.</td>
+        </tr>
+    </table>
+
+    <script>
+        function selectionSort(array) {
+            let n = array.length;
+            let permutations = 0;
+
+            for (let i = 0; i < n - 1; i++) {
+                let minIndex = i;
+
+                for (let j = i + 1; j < n; j++) {
+                    if (array[j] < array[minIndex]) {
+                        minIndex = j;
+                    }
+                    permutations++;
+                }
+
+                let temp = array[minIndex];
+                array[minIndex] = array[i];
+                array[i] = temp;
+            }
+
+            return permutations;
+        }
+
+        function displayResult(sortedArray, permutations) {
+            let resultContainer = document.getElementById('result');
+            resultContainer.style.display = 'block';
+
+            let resultUl = document.querySelector('#result ul');
+            resultUl.innerHTML = '';
+
+            sortedArray.forEach(item => {
+                let li = document.createElement('li');
+                li.textContent = item;
+                resultUl.appendChild(li);
+            });
+
+            let permutationsText = document.getElementById('permutations');
+            permutationsText.textContent = `Permutations: ${permutations}`;
+        }
+
+        function sortArray() {
+            let inputArray = document.getElementById('inputArray').value;
+            let parsedArray = inputArray.split(',').map(Number);
+
+            let permutations = selectionSort(parsedArray);
+            displayResult(parsedArray, permutations);
+        }
+
+        function clearInput() {
+            document.getElementById('inputArray').value = '';
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('permutations').textContent = '';
+        }
+    </script>
+</body>
+
+</html>
