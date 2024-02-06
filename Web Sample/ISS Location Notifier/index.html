@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 ISS Location Notifier 🌌</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        h1,
+        p,
+        h2,
+        ul,
+        table {
+            text-align: center;
+        }
+
+        table {
+            margin: auto;
+            max-width: 80%;
+            /* Adjust the width as needed */
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🚀 ISS Location Notifier 🌌</h1>
+    <p>This project notifies you about the current location of the International Space Station (ISS).</p>
+
+    <h2>Project Details:</h2>
+    <ul>
+        <li><strong>API Endpoint:</strong> <a href="http://open-notify.org/Open-Notify-API/ISS-Location-Now/"
+                target="_blank">ISS Location Now API</a></li>
+        <li><strong><span id="issCoordinates">International Space Station Coordinates:</span></strong> Latitude: <span
+                id="latitude"></span>, Longitude: <span id="longitude"></span></li>
+    </ul>
+
+    <h2>Notifications:</h2>
+    <p>Last Notification Time: <span id="lastNotificationTime"></span></p>
+
+    <h2>Current Time:</h2>
+    <table>
+        <tr id="timezoneRow">
+            <th>City</th>
+            <th>Time</th>
+        </tr>
+        <tr>
+            <td>🗼 Tokyo</td>
+            <td id="tokyoTime"></td>
+        </tr>
+        <tr>
+            <td>🗽 New York</td>
+            <td id="newYorkTime"></td>
+        </tr>
+        <tr>
+            <td>🎡 London</td>
+            <td id="londonTime"></td>
+        </tr>
+        <tr>
+            <td>🍫 Brussels</td>
+            <td id="brusselsTime"></td>
+        </tr>
+        <tr>
+            <td>🌉 San Francisco</td>
+            <td id="sanFranciscoTime"></td>
+        </tr>
+    </table>
+
+    <div id="your-map-container-id"></div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha512-veNdJeRoQrrTy2r2STAW+OSB7hRouaPNN0cz8apAd0VtQytOJlT2MqLkyMZfn3CqLd+9wME12HsD5k5PuDj2Jg=="
+        crossorigin=""></script>
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Function to fetch ISS location
+            function getISSLocation() {
+                fetch("http://api.open-notify.org/iss-now.json")
+                    .then(response => response.json())
+                    .then(data => {
+                        updateLocation(data.iss_position.latitude, data.iss_position.longitude);
+                    })
+                    .catch(error => {
+                        console.error("Error fetching ISS location:", error);
+                    });
+            }
+
+            // Function to update latitude and longitude on the page
+            function updateLocation(latitude, longitude) {
+                document.getElementById("latitude").textContent = latitude.toFixed(2);
+                document.getElementById("longitude").textContent = longitude.toFixed(2);
+            }
+
+            // Initial call to get ISS location
+            getISSLocation();
+
+            // Set interval to update ISS location every 5 seconds (adjust as needed)
+            setInterval(getISSLocation, 2500);
+        });
+    </script>
+</body>
+
+</html>
