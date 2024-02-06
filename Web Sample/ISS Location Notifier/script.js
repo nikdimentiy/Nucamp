@@ -1,4 +1,32 @@
 // Get current time and display it in different cities
+// script.js
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Function to fetch ISS location
+    function getISSLocation() {
+        fetch("https://api.wheretheiss.at/v1/satellites/25544")
+            .then(response => response.json())
+            .then(data => {
+                updateLocation(data.latitude, data.longitude);
+            })
+            .catch(error => {
+                console.error("Error fetching ISS location:", error);
+            });
+    }
+
+    // Function to update latitude and longitude on the page
+    function updateLocation(latitude, longitude) {
+        document.getElementById("latitude").textContent = latitude.toFixed(2);
+        document.getElementById("longitude").textContent = longitude.toFixed(2);
+    }
+
+    // Initial call to get ISS location
+    getISSLocation();
+
+    // Set interval to update ISS location every 5 seconds (adjust as needed)
+    setInterval(getISSLocation, 5000);
+});
+
 function updateCurrentTime() {
     var now = new Date();
 
@@ -37,4 +65,6 @@ function updateLastNotificationTime() {
 
 // Call the function to update last notification time
 updateLastNotificationTime();
+
+
 
