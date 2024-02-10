@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absolute Value Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            /* Align items at the top */
+            min-height: 100vh;
+            /* Ensure the container takes the full height of the viewport */
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            text-align: center;
+            margin-top: 50px;
+            /* Add some top margin for better spacing */
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        input[type="number"] {
+            padding: 8px;
+            margin: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Absolute Value Calculator</h1>
+        <p>Enter a number (integer or float) to calculate its absolute value:</p>
+        <input type="number" id="inputNumber">
+        <button onclick="calculateAbsolute()">Calculate</button>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        function calculateAbsolute() {
+            var num = parseFloat(document.getElementById("inputNumber").value);
+            if (!isNaN(num)) {
+                var result = Math.abs(num);
+                document.getElementById("result").textContent = "The absolute value of " + num + " is " + result + " 😊";
+            } else {
+                alert("Please enter a valid number.");
+            }
+        }
+    </script>
+</body>
+
+</html>
