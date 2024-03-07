@@ -1,33 +1,28 @@
 """
-    ---> THE FIRST PROGRAM-GAME IN NUCAMP BOOTCAMP <---
+    This program is the first program-game developed during the NuCamp Bootcamp.
 """
 
-# announce (declare) game characters for the game
-
+# Game Characters and their attributes
 wizard = "Wizard"
 elf = "Elf"
 human = "Human"
 ork = "Ork"
-
-# set hitpoints for each game characters (which means remaining health)
 
 wizard_hp = 70
 elf_hp = 100
 human_hp = 150
 ork_hp = 200
 
-# set damage indicator for each game characters (how hard they hit)
 wizard_damage = 150
 elf_damage = 100
 human_damage = 20
 ork_damage = 40
 
-# declare the main opponent in the game -> Dragon, and set health point and damage indicator
+# Dragon attributes
 dragon_hp = 300
 dragon_damage = 50
 
-# prompt the player to choose from a list options
-# and assign the selection result to the appropriate variables
+# Player selection
 flag = True
 while flag:
     while True:
@@ -69,7 +64,7 @@ while flag:
         print("Health: ", my_hp)
         print("Damage: ", my_damage)
 
-    # battle with Dragon
+    # Battle with Dragon
     while flag:
         dragon_hp -= my_damage
         print("The", character, "damaged the Dragon!")
@@ -88,4 +83,3 @@ while flag:
 
 print()
 print("Game over!")
-
