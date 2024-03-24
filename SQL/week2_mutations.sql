@@ -1,13 +1,10 @@
-Part 4: Mutations
-
 -- Management has decided it would like to designate employees as experts of zero or more categories, and they
 -- want the database to keep track of who is an expert in what. 
 -- Q: How will you satisfy this new requirement? 
--- A:
--- Q: What type of relationship is this? (e.g. 1-1, 1-many, or many-to-many?)
--- A: 
--- Feel free to fill in the blanks above with a comment or two.
+-- A: By creating a many-to-many relationship between employees and categories using a junction table.
 
+-- Q: What type of relationship is this? (e.g. 1-1, 1-many, or many-to-many?)
+-- A: This is a many-to-many relationship.
 
 -- Create Table
 -- Write a SQL statement that creates a new table meeting the following criteria:
@@ -35,7 +32,8 @@ ALTER TABLE employees_categories
 -- Insert records
 -- Write a query that inserts the following employee ID, category ID pairs into employees_categories:
 -- (1,2) (3,4) (4,3) (4,4) (8,2) (1,8) (1,3) (1,6)
-INSERT INTO employees_categories VALUES (1,2), (3,4), (4,3), (4,4), (8,2), (1,8), (1,3), (1,6);
+INSERT INTO employees_categories VALUES 
+(1,2), (3,4), (4,3), (4,4), (8,2), (1,8), (1,3), (1,6);
 
 
 -- Remove records
