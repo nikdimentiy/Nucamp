@@ -1,19 +1,14 @@
-from flask import Blueprint, json, jsonify, abort, request
+from flask import Blueprint, jsonify, abort, request
+from sqlalchemy.exc import SQLAlchemyError
 from ..models import User, Tweet, likes_table, db
 import sqlalchemy
 import hashlib
 import secrets
 
-
-def scramble(password: str):
-    """Hash and salt the given password"""
-    salt = secrets.token_hex(16)
-    return hashlib.sha512((password + salt).encode('utf-8')).hexdigest()
-
-
+# Blueprint initialization
 bp = Blueprint('users', __name__, url_prefix='/users')
 
-
+# Error handler for 400 Bad Request
 @bp.app_errorhandler(400)
 def bad_request(error):
     return jsonify({
@@ -22,90 +17,82 @@ def bad_request(error):
         "message": "Bad Request"
     }), 400
 
+# Helper function to hash and salt password
+def scramble(password: str):
+    """Hash and salt the given password"""
+    salt = secrets.token_hex(16)
+    return hashlib.sha512((password + salt).encode('utf-8')).hexdigest()
 
+# Route to fetch all users
 @bp.route('', methods=['GET'])
 def index():
-    users = User.query.all()
-    result = []
     try:
-        for u in users:
-            result.append(u.serialize())
+        users = User.query.all()
+        result = [user.serialize() for user in users]
         return jsonify(result)
-    except:
+    except SQLAlchemyError:
         return abort(400)
 
-
+# Route to fetch a specific user by ID
 @bp.route('/<int:id>', methods=['GET'])
 def show(id: int):
-    u = User.query.get_or_404(id)
+    user = User.query.get_or_404(id)
     try:
-        return jsonify(u.serialize())
-    except:
+        return jsonify(user.serialize())
+    except SQLAlchemyError:
         return abort(400)
 
-# returns all the tweets a user likes
-
-
+# Route to fetch all tweets liked by a user
 @bp.route('/<int:id>/liked_tweets', methods=['GET'])
 def liked_tweets(id: int):
-    u = User.query.get_or_404(id)
+    user = User.query.get_or_404(id)
     try:
-        result = []
-        for t in u.liked_tweets:
-            result.append(t.serialize())
-        return jsonify(result)
-    except:
+        liked_tweets = [tweet.serialize() for tweet in user.liked_tweets]
+        return jsonify(liked_tweets)
+    except SQLAlchemyError:
         return abort(400)
 
-
+# Route to create a new user
 @bp.route('', methods=['POST'])
 def create():
     if 'username' not in request.json or 'password' not in request.json:
         return abort(400)
-    if len(request.json['username']) < 3:
-        return abort(400)
-    if len(request.json['password']) < 8:
+    if len(request.json['username']) < 3 or len(request.json['password']) < 8:
         return abort(400)
     try:
-        u = User(
+        user = User(
             username=request.json['username'],
-            # scramble the password after pulling from json
             password=scramble(request.json['password'])
         )
-
-        db.session.add(u)
+        db.session.add(user)
         db.session.commit()
-        return jsonify(u.serialize())
-    except:
+        return jsonify(user.serialize()), 201  # HTTP 201 Created
+    except SQLAlchemyError:
+        db.session.rollback()
         return abort(400)
 
-# Bonus task 1
-
-
+# Route to like a tweet
 @bp.route('/<int:id>/likes', methods=['POST'])
 def like(id: int):
     if 'tweet_id' not in request.json:
         return abort(400)
-    u = User.query.get_or_404(id)
-    t = Tweet.query.get_or_404(request.json['tweet_id'])
-
+    user = User.query.get_or_404(id)
+    tweet = Tweet.query.get_or_404(request.json['tweet_id'])
     try:
         stmt = sqlalchemy.insert(likes_table).values(
-            tweet_id=t.id, user_id=u.id)
-        # compiling & executing the sql stmt based off the ORM notation
+            tweet_id=tweet.id, user_id=user.id)
         db.session.execute(stmt)
-        # adding the values to the table
         db.session.commit()
         return jsonify(True)
-    except:
+    except SQLAlchemyError:
+        db.session.rollback()
         return jsonify(False)
 
-
+# Route to unlike a tweet
 @bp.route('/<int:user_id>/likes/<int:tweet_id>', methods=['DELETE'])
 def unlike(user_id: int, tweet_id: int):
-    User.query.get_or_404(user_id)
-    Tweet.query.get_or_404(tweet_id)
-
+    user = User.query.get_or_404(user_id)
+    tweet = Tweet.query.get_or_404(tweet_id)
     try:
         stmt = sqlalchemy.delete(likes_table).where(
             sqlalchemy.and_(
@@ -116,31 +103,33 @@ def unlike(user_id: int, tweet_id: int):
         db.session.execute(stmt)
         db.session.commit()
         return jsonify(True)
-    except:
+    except SQLAlchemyError:
+        db.session.rollback()
         return jsonify(False)
 
-
+# Route to delete a user
 @bp.route('/<int:id>', methods=['DELETE'])
 def delete(id: int):
-    u = User.query.get_or_404(id)
+    user = User.query.get_or_404(id)
     try:
-        db.session.delete(u)
+        db.session.delete(user)
         db.session.commit()
         return jsonify(True)
-    except:
+    except SQLAlchemyError:
+        db.session.rollback()
         return jsonify(False)
 
-
+# Route to update user information
 @bp.route('/<int:id>', methods=['PATCH'])
 def update(id: int):
-    u = User.query.get_or_404(id)
-    # how to create error if user doesn't change anything?
+    user = User.query.get_or_404(id)
     if 'username' in request.json:
-        u.username = request.json['username']
+        user.username = request.json['username']
     if 'password' in request.json:
-        u.password = scramble(request.json['password'])
+        user.password = scramble(request.json['password'])
     try:
         db.session.commit()
         return jsonify(True)
-    except:
+    except SQLAlchemyError:
+        db.session.rollback()
         return jsonify(False)
