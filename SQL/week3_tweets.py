@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, abort, request
+from sqlalchemy.exc import SQLAlchemyError
 from ..models import Tweet, User, db
 
 bp = Blueprint('tweets', __name__, url_prefix='/tweets')
@@ -13,70 +14,61 @@ def bad_request(error):
     }), 400
 
 
-@bp.route('', methods=['GET'])  # decorator takes path and list of HTTP verbs
+@bp.route('', methods=['GET'])
 def index():
     try:
-        tweets = Tweet.query.all()  # ORM performs SELECT query
-        result = []
-        for t in tweets:
-            # build list of Tweets as dictionaries
-            result.append(t.serialize())
-        return jsonify(result)  # return JSON response
-    except:
+        tweets = Tweet.query.all()
+        result = [tweet.serialize() for tweet in tweets]
+        return jsonify(result)
+    except SQLAlchemyError:
         return abort(400)
 
 
 @bp.route('/<int:id>', methods=['GET'])
 def show(id: int):
-    t = Tweet.query.get_or_404(id)
+    tweet = Tweet.query.get_or_404(id)
     try:
-        return jsonify(t.serialize())
-    except:
+        return jsonify(tweet.serialize())
+    except SQLAlchemyError:
         return abort(400)
 
 
-# returns all the users who liked a tweet
 @bp.route('/<int:id>/liking_users', methods=['GET'])
 def liking_users(id: int):
-    # checks tweet exists before checking for likes
-    t = Tweet.query.get_or_404(id)
+    tweet = Tweet.query.get_or_404(id)
     try:
-        result = []
-        for u in t.likes:
-            # serialize because json doesn't know how to serialize by itself
-            result.append(u.serialize())
-        return jsonify(result)
-    except:
+        liking_users = [user.serialize() for user in tweet.likes]
+        return jsonify(liking_users)
+    except SQLAlchemyError:
         return abort(400)
 
 
 @bp.route('', methods=['POST'])
 def create():
-    # req body must contain user_id and content
     if 'user_id' not in request.json or 'content' not in request.json:
         return abort(400)
-    # user with id of user_id must exist
-    User.query.get_or_404(request.json['user_id'])
-    # construct Tweet
+
+    user = User.query.get_or_404(request.json['user_id'])
     try:
-        t = Tweet(
+        tweet = Tweet(
             user_id=request.json['user_id'],
             content=request.json['content']
         )
-        db.session.add(t)  # prepare CREATE statement
-        db.session.commit()  # execute CREATE statement
-        return jsonify(t.serialize())
-    except:
+        db.session.add(tweet)
+        db.session.commit()
+        return jsonify(tweet.serialize()), 201  # HTTP 201 Created
+    except SQLAlchemyError:
+        db.session.rollback()
         return abort(400)
 
 
 @bp.route('/<int:id>', methods=['DELETE'])
 def delete(id: int):
-    t = Tweet.query.get_or_404(id)
+    tweet = Tweet.query.get_or_404(id)
     try:
-        db.session.delete(t)  # prepare DELETE statement
-        db.session.commit()  # execute DELETE statement
+        db.session.delete(tweet)
+        db.session.commit()
         return jsonify(True)
-    except:
-        # something went wrong :(
+    except SQLAlchemyError:
+        db.session.rollback()
         return jsonify(False)
