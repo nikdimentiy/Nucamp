@@ -1,4 +1,5 @@
-""""Week 4 Workshop Assignment."""
+# Constants
+FIG_SIZE = (10, 5)
 
 # %% Setup Cell
 import psycopg2
@@ -10,137 +11,124 @@ con = psycopg2.connect("dbname=week4 user=postgres host=localhost port=5432")
 
 
 def sql_to_df(sql_query: str):
-    """Get result set of sql_query as a pandas DataFrame."""
-    return pd.read_sql(sql_query, con)
+    """Execute SQL query and return result set as a pandas DataFrame."""
+    try:
+        return pd.read_sql(sql_query, con)
+    except psycopg2.Error as e:
+        print("Error executing SQL query:", e)
+        return None
 
 
 # %% Task 1 Cell
 
 def task1():
-    """Perform Task 1."""
-
+    """Visualize artworks count by department."""
     title = "Artworks by Department"
     query = '''
-        select department, count(department) from moma_works
-        group by department order by count desc
+        SELECT department, COUNT(department) FROM moma_works
+        GROUP BY department ORDER BY COUNT DESC
     '''
-
     dataframe = sql_to_df(query)
-    _fig, axes = plt.subplots(figsize=(10, 5))
-    axes.set_title(title, fontsize=14)
+    if dataframe is not None:
+        fig, axes = plt.subplots(figsize=FIG_SIZE)
+        axes.set_title(title, fontsize=14)
 
-    # get evenly spaced x-axis positions
-    xpos = np.arange(len(dataframe))
-    # at each x, add bar (height based on count data)
-    axes.bar(xpos, dataframe["count"], width=0.50)
-    # at each x, add tick mark
-    axes.set_xticks(xpos)
-    # at each x, add label based on dept data
-    axes.set_xticklabels(dataframe["department"])
-    # label y-axis
-    axes.set_ylabel("Count", fontsize=12)
-    # rotate x-axis labels to prevent overlap
-    plt.setp(axes.get_xticklabels(), rotation=30, horizontalalignment='right')
+        xpos = np.arange(len(dataframe))
+        axes.bar(xpos, dataframe["count"], width=0.50)
+        axes.set_xticks(xpos)
+        axes.set_xticklabels(dataframe["department"])
+        axes.set_ylabel("Count", fontsize=12)
+        plt.setp(axes.get_xticklabels(), rotation=30, horizontalalignment='right')
 
-    plt.show()
+        plt.show()
 
 
 task1()
 
 # %% Task 2 Cell
 
-
 def task2():
-    """Perform Task 2."""
-
+    """Visualize artworks count by classification."""
     title = "Artworks by Classification"
     query = '''
-        select classification, count(classification) from moma_works
-        group by classification order by count desc
+        SELECT classification, COUNT(classification) FROM moma_works
+        GROUP BY classification ORDER BY COUNT DESC
     '''
-
     dataframe = sql_to_df(query)
-    _fig, axes = plt.subplots(figsize=(10, 5))
-    axes.set_title(title, fontsize=14)
+    if dataframe is not None:
+        fig, axes = plt.subplots(figsize=FIG_SIZE)
+        axes.set_title(title, fontsize=14)
 
-    xpos = np.arange(len(dataframe))
-    axes.bar(xpos, dataframe["count"], width=0.50)
-    axes.set_xticks(xpos)
-    axes.set_xticklabels(dataframe["classification"])
-    axes.set_ylabel("Count", fontsize=12)
-    plt.setp(axes.get_xticklabels(), rotation=30, horizontalalignment='right')
+        xpos = np.arange(len(dataframe))
+        axes.bar(xpos, dataframe["count"], width=0.50)
+        axes.set_xticks(xpos)
+        axes.set_xticklabels(dataframe["classification"])
+        axes.set_ylabel("Count", fontsize=12)
+        plt.setp(axes.get_xticklabels(), rotation=30, horizontalalignment='right')
 
-    plt.show()
+        plt.show()
 
 
 task2()
 
-
 # %% Task 3 Cell
 
-
 def task3():
-    """Perform Task 3."""
-
+    """Visualize artists count by nationality."""
     title = "Artists by Nationality"
     query = '''
-        select info -> 'nationality' as nationality, count(info -> 'nationality') from moma_artists
-        group by nationality order by count desc
+        SELECT info -> 'nationality' AS nationality, COUNT(info -> 'nationality') FROM moma_artists
+        GROUP BY nationality ORDER BY COUNT DESC
     '''
-
     dataframe = sql_to_df(query)
-    _fig, axes = plt.subplots(figsize=(10, 5))
-    axes.set_title(title, fontsize=14)
+    if dataframe is not None:
+        fig, axes = plt.subplots(figsize=FIG_SIZE)
+        axes.set_title(title, fontsize=14)
 
-    xpos = np.arange(len(dataframe))
-    axes.bar(xpos, dataframe["count"], width=0.50)
-    axes.set_xticks(xpos)
-    axes.set_xticklabels(dataframe["nationality"])
-    axes.set_ylabel("Count", fontsize=12)
+        xpos = np.arange(len(dataframe))
+        axes.bar(xpos, dataframe["count"], width=0.50)
+        axes.set_xticks(xpos)
+        axes.set_xticklabels(dataframe["nationality"])
+        axes.set_ylabel("Count", fontsize=12)
 
-    plt.show()
+        plt.show()
 
 
 task3()
 
 # %% Task 4 Cell
 
-
 def task4():
-    """Perform Task 4."""
-
+    """Visualize artists count by gender."""
     title = "Artists by Gender"
     query = ''' 
-    select upper(info ->> 'gender') as gender, count(info -> 'gender') from moma_artists
-    where info ->> 'gender' is not null
-    group by gender order by gender
+    SELECT UPPER(info ->> 'gender') AS gender, COUNT(info -> 'gender') FROM moma_artists
+    WHERE info ->> 'gender' IS NOT NULL
+    GROUP BY gender ORDER BY gender
     '''
-
     dataframe = sql_to_df(query)
-    fig, axes = plt.subplots(figsize=(10, 5))
-    axes.set_title(title, fontsize=14)
+    if dataframe is not None:
+        fig, axes = plt.subplots(figsize=FIG_SIZE)
+        axes.set_title(title, fontsize=14)
 
-    fig.set_facecolor('white')
-    axes.pie(
-        x=dataframe["count"],
-        labels=dataframe["gender"],
-        autopct='%1.1f%%',
-        colors=['lightcoral', 'skyblue', 'lavender']
-    )
-    # Equal aspect ratio ensures that pie is drawn as a circle.
-    axes.axis('equal')
+        fig.set_facecolor('white')
+        axes.pie(
+            x=dataframe["count"],
+            labels=dataframe["gender"],
+            autopct='%1.1f%%',
+            colors=['lightcoral', 'skyblue', 'lavender']
+        )
+        axes.axis('equal')
 
-    plt.show()
+        plt.show()
 
 
 task4()
 
 # %% Task 5 Cell: Describe this chart
 
-
 def task5():
-    """Perform Task 5."""
-
+    """Visualize daily acquisition count."""
     title = "Daily Acquisition by Date"
     query = """
             WITH daily_acquisition_count AS (
@@ -152,26 +140,25 @@ def task5():
             OVER (ORDER BY date_acquired) FROM daily_acquisition_count;
             """
     dataframe = sql_to_df(query)
-    _fig, axes = plt.subplots(figsize=(10, 5))
-    axes.set_title(title, fontsize=14)
+    if dataframe is not None:
+        fig, axes = plt.subplots(figsize=FIG_SIZE)
+        axes.set_title(title, fontsize=14)
 
-    xpos = np.arange(len(dataframe))
-    axes.bar(xpos, dataframe["sum"], width=0.50)
-    axes.set_xticks([
-        0,
-        len(dataframe) // 2,
-        len(dataframe)
-    ])
-    axes.set_xticklabels(dataframe.iloc[[
-        0,
-        len(dataframe) // 2,
-        -1
-    ]]["date_acquired"])
-    axes.set_ylabel("Count", fontsize=12)
+        xpos = np.arange(len(dataframe))
+        axes.bar(xpos, dataframe["sum"], width=0.50)
+        axes.set_xticks([
+            0,
+            len(dataframe) // 2,
+            len(dataframe)
+        ])
+        axes.set_xticklabels(dataframe.iloc[[
+            0,
+            len(dataframe) // 2,
+            -1
+        ]]["date_acquired"])
+        axes.set_ylabel("Count", fontsize=12)
 
-    plt.show()
+        plt.show()
 
 
 task5()
-
-# %%
